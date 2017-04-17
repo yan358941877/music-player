@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="referrer" content="never">
+    <title>music player</title>
+    <link rel="stylesheet" type="text/css" href="./style/font/iconfont.css">
+    <link rel="stylesheet" href="./style/css/music-player.css">
+    <!--<script src="jquery-3.1.1.js"></script>-->
+</head>
+
+<body>
+    <div class="music-player">
+        <div class="title-bar">
+            <h4>xin FM</h4>
+            <span class="voice iconfont icon-volume"></span>
+            <ul class="volume">
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li
+            </ul>
+            
+        </div>
+        <div class="channel">
+            <div class="channel-ct">
+                <ul class="clearfloat">
+                    <li class="channel-item "><span>R&amp;M</span></li>
+                    <li class="channel-item active"><span>Pop</span></li>
+                    <li class="channel-item"><span>80后</span></li>
+                    <li class="channel-item"><span>小清新</span></li>
+                    <li class="channel-item"><span>摇滚</span></li>
+                    <li class="channel-item"><span>流行</span></li>
+                </ul>
+            </div>
+            <span class="pre-channel iconfont icon-rewind"></span>
+            <span class="next-channel iconfont icon-fast-forward"></span>
+        </div>
+        <div class="music-panel clearfloat">
+            <div class="left-part">
+                <img src="http://musicdata.baidu.com/data2/pic/88733215/88733215.jpg" alt="">
+            </div>
+            <div class="right-part">
+                <div class="music-info">
+                    <p class="singer">The Cranberries</p>
+                    <p class="music-name">Never Grow Old</p>
+                    <span class="music-time">-04:30</span>
+                </div>
+                <div class="operate">
+                    <div class="process">
+                        <div class="now"></div>
+                    </div>
+                    <div><span class="heart iconfont icon-heart"></span></div>
+                    <div><span class="play iconfont icon-play"></span></div>
+                    <div><span class="skip-forward iconfont icon-skip-forward"></span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="dist/bundle.js"></script>
+
+</body>
+
+</html>
