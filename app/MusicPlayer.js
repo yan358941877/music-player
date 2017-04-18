@@ -5,9 +5,9 @@ function MusicPlayer(playerNode) {
     this.player = root;
     // 静音按钮 
     this.btn_quiet = root.find('.title-bar .voice');
-    // 音量调节器
-    this.volume = root.find('.title-bar .colume');
-    // 包裹channel的容器
+    // 音量调节器 title-bar
+    this.volume_block = root.find('.title-bar .volume');
+    // 包裹channel的容器 
     this.channel_item_ct = root.find('.channel .channel-ct ul');
     // 上一个channel按钮
     this.btn_pre_channel = root.find('.channel .pre-channel');
@@ -30,7 +30,7 @@ function MusicPlayer(playerNode) {
     this.btn_skip_forward = root.find('.music-panel .right-part .operate .skip-forward')
     //console.log(this.lastTime.text()+'aaa');
     this.music = new Audio();
-    this.volume = 1;
+    this.volume = 0.5;
     // 音乐风格相关
     this.channel = "public_fengge_liuxing";
     this.channelIndex = 1;
@@ -55,7 +55,9 @@ MusicPlayer.prototype = {
         // 关闭音量
         this.clickCloseVoice = this.clickCloseVoice.bind(this);
         this.btn_quiet.click(this.clickCloseVoice);
-
+        // 调节音量
+        this.clickVolumeBlock = this.clickVolumeBlock.bind(this);
+        this.volume_block.click(this.clickVolumeBlock);
         // 给 Audio对象添加 事件监听器
         this.musicPlaying = this.musicPlaying.bind(this);
         this.music.addEventListener("playing", this.musicPlaying);
@@ -88,11 +90,27 @@ MusicPlayer.prototype = {
     clickNextMusic: function(event){
         this.getMusic(this.channel);
     },
+    // 静音
     clickCloseVoice: function(event){
         // console.log(this.music.volume);
         this.music.volume = this.music.volume===0?this.volume:0;
     },
-
+    // 调节音量
+    clickVolumeBlock: function(event){
+        // 将所有音量li中的active去掉
+        let volume_block_index = this.volume_block.children('li').index(event.target);
+        if(volume_block_index<0){
+            return;
+        }
+        this.volume_block.children().removeClass("active");
+        // 获取当前点击的是第几个个音量按键
+        console.log("bbbb");
+        for(let i=volume_block_index; i<this.volume_block.children('li').length;i++){
+            this.volume_block.children('li').eq(i).addClass("active");
+        }
+        this.volume = (this.volume_block.children('li').length-volume_block_index)/this.volume_block.children('li').length;
+        this.music.volume = this.volume;
+    },
     //
     musicPlaying(event){
         // 更换音乐剩余时间
@@ -201,7 +219,7 @@ MusicPlayer.prototype = {
 
             context.music.autoplay = true;
             // 设置音量：
-            context.music.volume = 1;
+            context.music.volume = 0.5;
     
             context.playFlag = true;
             context.btn_play.removeClass('icon-play');

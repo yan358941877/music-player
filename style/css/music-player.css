@@ -44,10 +44,17 @@ body {
     margin-top: 3px;
     width: 8px;
     height: 2px;
+    background: #777;
+    cursor: pointer;
+}
+.music-player .title-bar .volume li.active {
+    list-style: none;
+    margin-top: 3px;
+    width: 8px;
+    height: 2px;
     background: #fff;
     cursor: pointer;
 }
-
 /* 播放器频道 */
 .music-player .channel {
     background: #2f3933;
