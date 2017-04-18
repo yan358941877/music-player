@@ -48,7 +48,7 @@ body {
     cursor: pointer;
 }
 
-
+/* 播放器频道 */
 .music-player .channel {
     background: #2f3933;
     padding: 0 40px;
