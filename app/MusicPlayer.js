@@ -236,6 +236,7 @@ MusicPlayer.prototype = {
     },
     getMusic(channel){
         var url=null;
+        this.lyrics = [];
         if(!channel){
             url = "http://api.jirengu.com/fm/getSong.php?channel=" + "public_fengge_liuxing";
         }else {
