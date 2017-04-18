@@ -28,6 +28,10 @@ function MusicPlayer(playerNode) {
     this.btn_play = root.find('.music-panel .right-part .operate .play');
     // 下一首 span
     this.btn_skip_forward = root.find('.music-panel .right-part .operate .skip-forward')
+    // 进度条容器
+    this.process_bar = root.find('.music-panel .right-part .operate .process');
+    // 进度条
+    this.process_now_bar = root.find('.music-panel .right-part .operate .process .now');
     //console.log(this.lastTime.text()+'aaa');
     this.music = new Audio();
     this.volume = 0.5;
@@ -73,7 +77,12 @@ MusicPlayer.prototype = {
         // 点击上一个channel
         this.clickPreChannel = this.clickPreChannel.bind(this);
         this.btn_pre_channel.on("click", this.clickPreChannel);
+
+        //点击进度条
+        this.clickProcessBar = this.clickProcessBar.bind(this);
+        this.process_bar.on('click', this.clickProcessBar);
     },
+    // 播放或暂停歌曲
     clickPlay: function(event){
         if(!this.playFlag){
             this.music.play();
@@ -87,6 +96,7 @@ MusicPlayer.prototype = {
             this.playFlag = !this.playFlag;
         }
     },
+    // 下一首歌曲
     clickNextMusic: function(event){
         this.getMusic(this.channel);
     },
@@ -104,7 +114,6 @@ MusicPlayer.prototype = {
         }
         this.volume_block.children().removeClass("active");
         // 获取当前点击的是第几个个音量按键
-        console.log("bbbb");
         for(let i=volume_block_index; i<this.volume_block.children('li').length;i++){
             this.volume_block.children('li').eq(i).addClass("active");
         }
@@ -126,7 +135,9 @@ MusicPlayer.prototype = {
         }
         let time = this.music.duration;
         let context = this;
+
         this.music.ontimeupdate = function(){
+            let time_percent = 100*context.music.currentTime/time + '%';
             let minute = Math.floor((time-context.music.currentTime)/60);
             let second = Math.floor((time-context.music.currentTime)%60);
             if(second<10){
@@ -134,7 +145,8 @@ MusicPlayer.prototype = {
             }else{
                 context.lastTime.text("-0" + minute + ':' + second);
             }
-
+            // 修改进度条
+            context.process_now_bar.css('width', time_percent);
             // 添加歌词功能
         }
         
@@ -190,6 +202,21 @@ MusicPlayer.prototype = {
         }else {
             return;
         }
+    },
+    // 点击进度条，跳转到指定的声音节点
+    clickProcessBar(event){
+        // 获取进度条的总长度
+        let process_length = this.process_bar.outerWidth();
+        //console.log(process_length);
+        // 获取进度条的起点位置坐标
+        let start_position = this.process_bar.offset().left;
+        //console.log(start_position);
+        let click_position = event.clientX;
+        //console.log(click_position);
+        // 获取点击位置对应的具体时间
+        let changeTime = this.music.duration * (click_position-start_position)/process_length;
+        // 设置音乐的currentTime---> 由于时间发生了变化，会自动触发ontimeupdate事件---> 在playingmusic中，为该事件指定了处理方法(包括对进度条长度，剩余时间的改变)
+        this.music.currentTime = changeTime;
     },
     getMusic(channel){
         var url=null;

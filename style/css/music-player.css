@@ -158,11 +158,13 @@ body {
     right: 20px;
     color: #91bdb4;
 }
+/* 进度条*/
 .music-panel .right-part .operate .process {
     width: 100%;
     margin: 15px auto;
     height: 3px;
     background: #fff;
+    cursor: pointer;
 }
 .music-panel .right-part .operate .process .now{
     width: 40%;
