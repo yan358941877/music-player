@@ -79,7 +79,7 @@ MusicPlayer.prototype = {
         // 给 Audio对象添加 事件监听器
         this.musicPlaying = this.musicPlaying.bind(this);
         this.music.addEventListener("playing", this.musicPlaying);
-
+        // 给Audio对象添加ended事件
         this.getMusic = this.getMusic.bind(this);
         this.music.addEventListener("ended", this.getMusic);
         // 点击 channel-item切换channel
@@ -251,7 +251,8 @@ MusicPlayer.prototype = {
     getMusic(channel) {
         var url = null;
         this.lyrics = [];
-        if(channel === "my-favourite"){
+        // 如果当前音乐类型是我喜欢的歌曲，则从localStorage中获取歌曲的信息
+        if(this.channel === "my-favourite"){
             let storeLength = localStorage.music.split(',').length;
             this.index_like_music = (this.index_like_music+1)%storeLength;
 
@@ -281,6 +282,7 @@ MusicPlayer.prototype = {
             this.btn_play.addClass('icon-pause');
             return ;
         }
+        // 如果当前channel的类型不是“喜欢的歌”,则根据API从后台获取
         this.index_like_music = -1;
         if (!channel) {
             url = "http://api.jirengu.com/fm/getSong.php?channel=" + "public_fengge_liuxing";
