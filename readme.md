@@ -1,28 +1,8 @@
-当页面打开的时候，应该已经得到了数据，但是没有播放，当用户点击播放键时才开始播放
-* 页面打开，获取数据:
+* 获取音乐、播放的实现（打开页面，自动获取歌曲，并自动播放），并显示歌曲的相关信息
 
-```javascript
-$.ajax({
-    method: "get",
-    url: ""
-}).done(function(data){
-    console.log(JSON.parse(data).song[0].url)
-})
-```
+* 暂停功能的实现
 
-* 获取的数据是JSON格式的，将JSON格式数据转换为Obejct
-
-```javascript
-JSON.parse(data)
-```
-
-* 文本超出自动显示为省略号： 
-
-```
-white-space: nowrap;
-overflow: hidden;
-text-overflow: ellipsis;
-```
+* 下一首功能的实现
 
 * 剩余时间的实现
     * 使用ontimeupdate来实现
@@ -48,7 +28,7 @@ text-overflow: ellipsis;
     * 将歌词按照minute second存放在一个二维数组中：几分几秒，当时间改变时，可以直接在数组的对应位置找到此时的歌词(方便查找)
     
 * 喜欢的实现：结合本地存储来实现
-    * 点击喜欢时，喜欢按钮变成红色
-    * 把当前歌曲url添加到localstorage中
-    * 当channel切换到我喜欢的歌曲时，向getMusic中传入localStorage中的
+    * 点击心型按钮时，按钮变成红色，并且将当前歌曲的信息保存到本地
+    * 再次点击时，按钮变成灰色，并将当前歌曲的信息从本地删除
+    * 当channel切换到我喜欢的歌曲时，播放之前添加“喜欢”的歌曲
     * 当点击下一首按钮时，进行判断(当前channel是否是我喜欢的音乐)，如果是则从localStorage中获取下一首音乐
