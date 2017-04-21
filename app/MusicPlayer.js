@@ -44,6 +44,12 @@ function MusicPlayer(playerNode) {
     // 音乐歌词
     this.lyrics = [];
 
+    // 资源链接地址相关
+    this.src_sid = null;
+    this.src_picture = null;
+    this.src_singerName = null;
+    this.src_musicName = null;
+
     // 现在正在播放localStorage中的第几首音乐
     this.index_like_music = -1;
 
@@ -245,6 +251,37 @@ MusicPlayer.prototype = {
     getMusic(channel) {
         var url = null;
         this.lyrics = [];
+        if(channel === "my-favourite"){
+            let storeLength = localStorage.music.split(',').length;
+            this.index_like_music = (this.index_like_music+1)%storeLength;
+
+            let sid = localStorage.sid.split(',')[this.index_like_music];
+            let music_src = localStorage.music.split(',')[this.index_like_music];
+            let music_name = localStorage.title.split(',')[this.index_like_music];
+            let singer_name = localStorage.singer.split(',')[this.index_like_music];
+            let picture_src = localStorage.picture.split(',')[this.index_like_music]+"@s_0,w_300";
+            console.log(picture_src);
+            this.getLyric(sid);
+            // 设置Audio对象的src
+            this.music.src = music_src;
+            // 设置音乐名称
+            this.musicName.eq(0).text(music_name);
+            // 设置歌手名称
+            this.singer.eq(0).text(singer_name);
+            // 设置封面图片
+            this.picture.eq(0).attr("src", picture_src);
+
+            this.btn_like.css("color", "red");
+            this.music.autoplay = true;
+            // 设置音量：
+            this.music.volume = 0.5;
+
+            this.playFlag = true;
+            this.btn_play.removeClass('icon-play');
+            this.btn_play.addClass('icon-pause');
+            return ;
+        }
+        this.index_like_music = -1;
         if (!channel) {
             url = "http://api.jirengu.com/fm/getSong.php?channel=" + "public_fengge_liuxing";
         } else {
@@ -258,26 +295,31 @@ MusicPlayer.prototype = {
         }).done(function (data) {
             //console.log(JSON.parse(data).song[0]);
             // 获取歌词
-            context.getLyric(JSON.parse(data).song[0].sid);
+            let sid = JSON.parse(data).song[0].sid;
+            let music_src = JSON.parse(data).song[0].url;
+            let music_name = JSON.parse(data).song[0].title;
+            let singer_name = JSON.parse(data).song[0].artist;
+            let picture_src = JSON.parse(data).song[0].picture;
+            //console.log(picture_src);
+            // 获取歌词
+            context.getLyric(sid);
+            // 设置Audio对象的src
+            context.music.src = music_src;
+            // 设置音乐名称
+            context.musicName.eq(0).text(music_name);
+            // 设置歌手名称
+            context.singer.eq(0).text(singer_name);
+            // 设置封面图片
+            context.picture.eq(0).attr("src", picture_src);
 
-            context.music.src = JSON.parse(data).song[0].url;
             // 如果是喜欢的歌曲，则把like按钮修改为红色
             if (context.isFavourite(context.music.src)) {
                 context.btn_like.css("color", "red");
-            }else {
+            } else {
                 context.btn_like.css("color", "rgb(99, 102, 100)");
             }
-            context.picture.eq(0).attr("src", JSON.parse(data).song[0].picture);
-            // 更换音乐名称
-            context.musicName.eq(0).text(JSON.parse(data).song[0].title);
-            // 更换歌手名称
-            context.singer.eq(0).text(JSON.parse(data).song[0].artist);
-            // 更换音乐剩余时间
 
-            // 不应该在这里从audio对象中获取音乐的时间，因为音乐可能还没有加载出来
-            //console.log(context.music.currentTime);
-            //context.lastTime.text('-' + context.music.currentTime);
-
+            // 开启自动播放
             context.music.autoplay = true;
             // 设置音量：
             context.music.volume = 0.5;
@@ -285,6 +327,14 @@ MusicPlayer.prototype = {
             context.playFlag = true;
             context.btn_play.removeClass('icon-play');
             context.btn_play.addClass('icon-pause');
+
+            // 将歌曲url，sid，歌手名称，歌曲名称，图片地址保存到music-player对象中
+            //context.src_music = context.music.src;
+            context.src_sid = sid;
+            context.src_picture = picture_src.split('@')[0];
+            context.src_singerName = singer_name;
+            context.src_musicName = music_name;
+            
         })
     },
     // 获取歌词，并且根据歌词对应的时间存放到lyric数组中对应的位置
@@ -335,6 +385,9 @@ MusicPlayer.prototype = {
         }
     },
     isFavourite(musicSrc) {
+        if(!localStorage.music){
+            return false;
+        }
         let musiclist = localStorage.music.split(',');
         let index = musiclist.indexOf(musicSrc);
         if (index < 0) {
@@ -343,15 +396,54 @@ MusicPlayer.prototype = {
             return true;
         }
     },
+    /*
+    this.src_sid = null;
+    this.src_picture = null;
+    this.src_singerName = null;
+    this.src_musicName = null;
+    */
     addFavourite() {
         if (localStorage.music) {
             let musiclist = localStorage.music.split(',');
             musiclist.push(this.music.src);
             localStorage.music = musiclist;
+            // sid
+            let sidlist = localStorage.sid.split(',');
+            sidlist.push(this.src_sid);
+            localStorage.sid = sidlist;
+            // picture
+            let picturelist = localStorage.picture.split(',');
+            picturelist.push(this.src_picture);
+            localStorage.picture = picturelist;
+            // singer
+            let singerlist = localStorage.singer.split(',');
+            singerlist.push(this.src_singerName);
+            localStorage.singer = singerlist;
+            // title
+            let titlelist = localStorage.title.split(',');
+            titlelist.push(this.src_musicName);
+            localStorage.title = titlelist;
         } else {
             let musiclist = [];
             musiclist.push(this.music.src);
             localStorage.music = musiclist;
+
+            // sid
+            let sidlist = [];
+            sidlist.push(this.src_sid);
+            localStorage.sid = sidlist;
+            // picture
+            let picturelist = [];
+            picturelist.push(this.src_picture);
+            localStorage.picture = picturelist;
+            // singer
+            let singerlist = [];
+            singerlist.push(this.src_singerName);
+            localStorage.singer = singerlist;
+            // title
+            let titlelist = [];
+            titlelist.push(this.src_musicName);
+            localStorage.title = titlelist;
         }
     },
     removeFavourite(musicSrc) {
@@ -361,6 +453,23 @@ MusicPlayer.prototype = {
             let index = musiclist.indexOf(musicSrc);
             musiclist.splice(index, 1);
             localStorage.music = musiclist;
+
+            // sid
+            let sidlist = localStorage.sid.split(',');
+            sidlist.splice(index, 1);
+            localStorage.sid = sidlist;
+            // picture
+            let picturelist = localStorage.picture.split(',');
+            picturelist.splice(index, 1);
+            localStorage.picture = sidlist;
+            // singer
+            let singerlist = localStorage.singer.split(',');
+            singerlist.splice(index, 1);
+            localStorage.singer = singerlist;
+            // title
+            let titlelist = localStorage.title.split(',');
+            titlelist.splice(index, 1);
+            localStorage.title = titlelist;
         }
     }
 
