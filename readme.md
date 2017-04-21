@@ -48,3 +48,7 @@ text-overflow: ellipsis;
     * 将歌词按照minute second存放在一个二维数组中：几分几秒，当时间改变时，可以直接在数组的对应位置找到此时的歌词(方便查找)
     
 * 喜欢的实现：结合本地存储来实现
+    * 点击喜欢时，喜欢按钮变成红色
+    * 把当前歌曲url添加到localstorage中
+    * 当channel切换到我喜欢的歌曲时，向getMusic中传入localStorage中的
+    * 当点击下一首按钮时，进行判断(当前channel是否是我喜欢的音乐)，如果是则从localStorage中获取下一首音乐
